@@ -1,14 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android">
-    <TextView
+    android:keepScreenOn="true">
+
+    <com.example.codescanner.camera.CameraSourcePreview
+        android:id="@+id/camera_preview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <include layout="@layout/camera_preview_overlay"/>
+
+    </com.example.codescanner.camera.CameraSourcePreview>
+
+    <include
+        layout="@layout/top_action_bar_in_live_camera"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Ready to scan barcodes and qr codes?"
-        android:paddingBottom="10dp"
-        android:paddingTop="20dp"
-    />
+        android:layout_gravity="top"/>
 
-</LinearLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

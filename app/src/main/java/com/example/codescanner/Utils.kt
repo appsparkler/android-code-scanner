@@ -2,9 +2,17 @@ package com.example.codescanner
 
 import android.content.Context
 import android.content.res.Configuration
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.Matrix
+import android.graphics.Rect
+import android.graphics.YuvImage
 import android.hardware.Camera
 import android.util.Log
 import com.example.codescanner.camera.CameraSizePair
+import com.google.mlkit.vision.common.InputImage
+import java.io.ByteArrayOutputStream
+import java.nio.ByteBuffer
 import java.util.ArrayList
 import kotlin.math.abs
 
@@ -44,6 +52,29 @@ object Utils {
         }
 
         return validPreviewSizes
+    }
+
+    fun convertToBitmap(data: ByteBuffer, width: Int, height: Int, rotationDegrees: Int): Bitmap? {
+        data.rewind()
+        val imageInBuffer = ByteArray(data.limit())
+        data.get(imageInBuffer, 0, imageInBuffer.size)
+        try {
+            val image = YuvImage(
+                imageInBuffer, InputImage.IMAGE_FORMAT_NV21, width, height, null
+            )
+            val stream = ByteArrayOutputStream()
+            image.compressToJpeg(Rect(0, 0, width, height), 80, stream)
+            val bmp = BitmapFactory.decodeByteArray(stream.toByteArray(), 0, stream.size())
+            stream.close()
+
+            // Rotate the image back to straight.
+            val matrix = Matrix()
+            matrix.postRotate(rotationDegrees.toFloat())
+            return Bitmap.createBitmap(bmp, 0, 0, bmp.width, bmp.height, matrix, true)
+        } catch (e: java.lang.Exception) {
+            Log.e(TAG, "Error: " + e.message)
+        }
+        return null
     }
 
     fun isPortraitMode(context: Context): Boolean =

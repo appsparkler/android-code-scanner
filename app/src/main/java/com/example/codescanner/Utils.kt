@@ -1,6 +1,8 @@
 package com.example.codescanner
 
+import android.app.Activity
 import android.content.Context
+import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -9,6 +11,8 @@ import android.graphics.Rect
 import android.graphics.YuvImage
 import android.hardware.Camera
 import android.util.Log
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import com.example.codescanner.camera.CameraSizePair
 import com.google.mlkit.vision.common.InputImage
 import java.io.ByteArrayOutputStream
@@ -76,6 +80,35 @@ object Utils {
         }
         return null
     }
+
+    internal fun requestRuntimePermissions(activity: Activity) {
+
+        val allNeededPermissions = getRequiredPermissions(activity).filter {
+            ContextCompat.checkSelfPermission(activity, it) != PackageManager.PERMISSION_GRANTED
+        }
+
+        if (allNeededPermissions.isNotEmpty()) {
+            ActivityCompat.requestPermissions(
+                activity, allNeededPermissions.toTypedArray(), /* requestCode= */ 0
+            )
+        }
+    }
+
+    internal fun allPermissionsGranted(context: Context): Boolean = getRequiredPermissions(
+        context
+    )
+        .all { ContextCompat.checkSelfPermission(context, it) == PackageManager.PERMISSION_GRANTED }
+
+    private fun getRequiredPermissions(context: Context): Array<String> {
+        return try {
+            val info = context.packageManager.getPackageInfo(context.packageName, PackageManager.GET_PERMISSIONS)
+            val ps = info.requestedPermissions
+            if (ps != null && ps.isNotEmpty()) ps else arrayOf()
+        } catch (e: Exception) {
+            arrayOf()
+        }
+    }
+
 
     fun isPortraitMode(context: Context): Boolean =
         context.resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT

@@ -27,6 +27,13 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        if (!Utils.allPermissionsGranted(this)) {
+            Utils.requestRuntimePermissions(this)
+        }
+    }
+
     private inner class ModeItemAdapter internal constructor(private val detectionModes: Array<DetectionMode>) :
         RecyclerView.Adapter<ModeItemAdapter.ModeItemViewHolder>() {
 

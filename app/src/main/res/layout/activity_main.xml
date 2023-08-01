@@ -3,17 +3,26 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
->
+    android:orientation="vertical">
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:fontFamily="google-sans"
+        android:gravity="center_horizontal"
         android:paddingTop="32dp"
         android:paddingBottom="16dp"
-        android:fontFamily="google-sans"
         android:text="@string/app_name"
         android:textColor="@color/white"
-        android:gravity="center_horizontal"
-        android:textSize="18sp"
+        android:textSize="18sp" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/mode_recycler_view"
+        android:scrollbars="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+
     />
+
+
 </LinearLayout>
